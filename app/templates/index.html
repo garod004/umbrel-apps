@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YT Downloader</title>
+  <style>
+    /* ── Reset & Base ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0f0f0f;
+      --surface:   #1a1a1a;
+      --surface2:  #242424;
+      --border:    #2e2e2e;
+      --accent:    #ff3333;
+      --accent-dk: #cc0000;
+      --text:      #e8e8e8;
+      --muted:     #888;
+      --success:   #22c55e;
+      --error:     #ef4444;
+      --warning:   #f59e0b;
+      --radius:    12px;
+      --shadow:    0 4px 24px rgba(0,0,0,.45);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Layout ────────────────────────────────────────────── */
+    .page {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 24px 16px 80px;
+    }
+
+    /* ── Header ─────────────────────────────────────────────── */
+    header {
+      text-align: center;
+      padding: 40px 0 32px;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .tagline {
+      color: var(--muted);
+      margin-top: 6px;
+      font-size: 14px;
+    }
+
+    /* ── Card ───────────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 16px;
+    }
+
+    /* ── Download Form ──────────────────────────────────────── */
+    .url-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 15px;
+      padding: 12px 16px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    input[type="text"]:focus { border-color: var(--accent); }
+    input[type="text"]::placeholder { color: var(--muted); }
+
+    .format-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    select {
+      flex: 1;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 14px;
+      padding: 11px 14px;
+      outline: none;
+      cursor: pointer;
+      transition: border-color .2s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+    }
+    select:focus { border-color: var(--accent); }
+    select option { background: #1a1a1a; }
+
+    .btn-download {
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 12px 28px;
+      transition: background .15s, transform .1s;
+      white-space: nowrap;
+      letter-spacing: .02em;
+    }
+    .btn-download:hover:not(:disabled) { background: #e02020; }
+    .btn-download:active:not(:disabled) { transform: scale(.97); }
+    .btn-download:disabled { opacity: .55; cursor: not-allowed; }
+
+    /* ── Progress Cards ──────────────────────────────────────── */
+    .section-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin: 28px 0 12px;
+    }
+
+    .dl-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      margin-bottom: 12px;
+      transition: opacity .4s;
+    }
+
+    .dl-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .dl-title {
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+    }
+
+    .dl-format {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .progress-track {
+      background: var(--surface2);
+      border-radius: 999px;
+      height: 6px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 999px;
+      transition: width .5s ease;
+      width: 0%;
+    }
+    .progress-fill.done { background: var(--success); }
+    .progress-fill.fail { background: var(--error); }
+
+    .dl-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .dl-percent { font-weight: 700; color: var(--text); }
+
+    /* ── Badge ───────────────────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 10px;
+      letter-spacing: .04em;
+    }
+    .badge-downloading { background: rgba(255,51,51,.15); color: var(--accent); }
+    .badge-complete    { background: rgba(34,197,94,.15);  color: var(--success); }
+    .badge-error       { background: rgba(239,68,68,.15);  color: var(--error); }
+    .badge-pending     { background: rgba(245,158,11,.15); color: var(--warning); }
+
+    /* ── History Table ───────────────────────────────────────── */
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 8px 12px;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--surface2); }
+
+    td { padding: 10px 12px; vertical-align: middle; }
+
+    .td-title {
+      max-width: 260px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn-dl-file {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 12px;
+      padding: 4px 10px;
+      text-decoration: none;
+      display: inline-block;
+      transition: background .15s;
+    }
+    .btn-dl-file:hover { background: var(--border); }
+
+    .empty-msg {
+      color: var(--muted);
+      font-size: 14px;
+      text-align: center;
+      padding: 24px 0;
+    }
+
+    /* ── Error banner ─────────────────────────────────────────── */
+    .error-banner {
+      background: rgba(239,68,68,.12);
+      border: 1px solid rgba(239,68,68,.3);
+      border-radius: 8px;
+      color: var(--error);
+      font-size: 13px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      display: none;
+    }
+    .error-banner.visible { display: block; }
+
+    /* ── Responsive ──────────────────────────────────────────── */
+    @media (max-width: 520px) {
+      .url-row { flex-direction: column; }
+      .format-row { flex-direction: column; }
+      .btn-download { width: 100%; }
+      .logo { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">▶</div>
+      YT Downloader
+    </div>
+    <p class="tagline">Baixe vídeos e músicas do YouTube direto no servidor</p>
+  </header>
+
+  <!-- Form Card -->
+  <div class="card">
+    <div id="formError" class="error-banner"></div>
+
+    <div class="url-row">
+      <input
+        id="urlInput"
+        type="text"
+        placeholder="Cole o link do YouTube aqui (vídeo ou playlist)..."
+        autocomplete="off"
+        spellcheck="false"
+      />
+    </div>
+
+    <div class="format-row">
+      <select id="formatSelect">
+        <option value="video-1080">🎬 Vídeo 1080p (MP4)</option>
+        <option value="video-720" selected>🎬 Vídeo 720p (MP4)</option>
+        <option value="video-480">🎬 Vídeo 480p (MP4)</option>
+        <option value="audio-mp3">🎵 Apenas Áudio (MP3)</option>
+      </select>
+      <button id="downloadBtn" class="btn-download" onclick="startDownload()">
+        ⬇&nbsp; Baixar
+      </button>
+    </div>
+  </div>
+
+  <!-- Active Downloads -->
+  <div id="activeSection" style="display:none">
+    <p class="section-label">Em progresso</p>
+    <div id="activeList"></div>
+  </div>
+
+  <!-- History -->
+  <p class="section-label">Histórico</p>
+  <div class="card">
+    <div id="historyContent">
+      <p class="empty-msg">Carregando histórico...</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  /* ─────────────────────────────────────────────────────────
+     Estado local: rastreia downloads ativos nesta sessão
+  ───────────────────────────────────────────────────────── */
+  const activeDownloads = {};  // {id: {eventSource, format}}
+
+  /* ─────────────────────────────────────────────────────────
+     Iniciar download
+  ───────────────────────────────────────────────────────── */
+  async function startDownload() {
+    const urlEl  = document.getElementById('urlInput');
+    const fmtEl  = document.getElementById('formatSelect');
+    const btn    = document.getElementById('downloadBtn');
+    const errEl  = document.getElementById('formError');
+
+    const url    = urlEl.value.trim();
+    const format = fmtEl.value;
+
+    errEl.classList.remove('visible');
+
+    if (!url) {
+      showError('Cole um link do YouTube antes de baixar.');
+      urlEl.focus();
+      return;
+    }
+
+    btn.disabled    = true;
+    btn.textContent = 'Iniciando...';
+
+    try {
+      const res = await fetch('/api/download', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ url, format }),
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.detail || `Erro ${res.status}`);
+      }
+
+      const { download_id } = await res.json();
+      urlEl.value = '';
+
+      // Mostrar card de progresso e conectar SSE
+      addProgressCard(download_id, url, format);
+      connectSSE(download_id, format);
+
+    } catch (err) {
+      showError('Erro ao iniciar: ' + err.message);
+    } finally {
+      btn.disabled    = false;
+      btn.textContent = '⬇\u00a0 Baixar';
+    }
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('formError');
+    el.textContent = '⚠ ' + msg;
+    el.classList.add('visible');
+  }
+
+  /* ─────────────────────────────────────────────────────────
+     Card de progresso
+  ───────────────────────────────────────────────────────── */
+  function formatLabel(key) {
+    const map = {
+      'video-1080': '1080p MP4',
+      'video-720':  '720p MP4',
+      'video-480':  '480p MP4',
+      'audio-mp3':  'MP3',
+    };
+    return map[key] || key;
+  }
+
+  function addProgressCard(id, url, format) {
+    const section = document.getElementById('activeSection');
+    const list    = document.getElementById('activeList');
+
+    const card = document.createElement('div');
+    card.className = 'dl-card';
+    card.id = 'card-' + id;
+    card.innerHTML = `
+      <div class="dl-card-header">
+        <div class="dl-title" id="title-${id}">Aguardando servidor...</div>
+        <div class="dl-format">${formatLabel(format)}</div>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="fill-${id}"></div>
+      </div>
+      <div class="dl-meta">
+        <span class="dl-percent" id="pct-${id}">0%</span>
+        <span id="speed-${id}"></span>
+        <span id="eta-${id}"></span>
+        <span id="badge-${id}"><span class="badge badge-downloading">Baixando</span></span>
+      </div>
+    `;
+
+    list.prepend(card);
+    section.style.display = '';
+  }
+
+  /* ─────────────────────────────────────────────────────────
+     SSE: receber progresso em tempo real
+  ───────────────────────────────────────────────────────── */
+  function connectSSE(id, format) {
+    const es = new EventSource('/api/progress/' + id);
+    activeDownloads[id] = { es, format };
+
+    es.onmessage = function (evt) {
+      const data = JSON.parse(evt.data);
+      updateCard(id, data);
+
+      if (data.status === 'complete' || data.status === 'error') {
+        es.close();
+        delete activeDownloads[id];
+        loadHistory();
+
+        // Suaviza saída do card após 4 s
+        setTimeout(() => {
+          const card = document.getElementById('card-' + id);
+          if (card) card.style.opacity = '0.45';
+        }, 4000);
+      }
+    };
+
+    es.onerror = function () { es.close(); };
+  }
+
+  function updateCard(id, d) {
+    const titleEl = document.getElementById('title-' + id);
+    const fillEl  = document.getElementById('fill-'  + id);
+    const pctEl   = document.getElementById('pct-'   + id);
+    const spdEl   = document.getElementById('speed-' + id);
+    const etaEl   = document.getElementById('eta-'   + id);
+    const badgeEl = document.getElementById('badge-' + id);
+
+    if (!titleEl) return;
+
+    // Título: exibir playlist_index se aplicável
+    if (d.title) {
+      titleEl.textContent = (d.playlist_total > 0)
+        ? `[${d.playlist_index}/${d.playlist_total}] ${d.title}`
+        : d.title;
+    }
+
+    fillEl.style.width = d.percent + '%';
+    pctEl.textContent  = d.percent + '%';
+    if (d.speed) spdEl.textContent = d.speed;
+    if (d.eta)   etaEl.textContent = 'ETA ' + d.eta;
+
+    if (d.status === 'complete') {
+      fillEl.classList.add('done');
+      pctEl.textContent  = '100%';
+      spdEl.textContent  = '';
+      etaEl.textContent  = '';
+      badgeEl.innerHTML  = '<span class="badge badge-complete">✓ Concluído</span>';
+    } else if (d.status === 'error') {
+      fillEl.classList.add('fail');
+      titleEl.textContent = 'Erro: ' + (d.error || 'falha desconhecida');
+      badgeEl.innerHTML   = '<span class="badge badge-error">✗ Erro</span>';
+      spdEl.textContent   = '';
+      etaEl.textContent   = '';
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────
+     Histórico
+  ───────────────────────────────────────────────────────── */
+  async function loadHistory() {
+    const container = document.getElementById('historyContent');
+    try {
+      const res     = await fetch('/api/history');
+      const history = await res.json();
+
+      if (!history.length) {
+        container.innerHTML = '<p class="empty-msg">Nenhum download ainda.</p>';
+        return;
+      }
+
+      const rows = history.map(item => {
+        const dlBtn = item.filename
+          ? `<a class="btn-dl-file" href="/files/${encodeURIComponent(item.filename)}" download>⬇ Baixar</a>`
+          : '—';
+
+        const title = item.title || truncate(item.url, 45);
+
+        return `
+          <tr>
+            <td class="td-title" title="${escHtml(item.title || item.url)}">${escHtml(title)}</td>
+            <td>${escHtml(item.format_label || '—')}</td>
+            <td><span class="badge badge-${item.status}">${statusLabel(item.status)}</span></td>
+            <td style="white-space:nowrap;color:var(--muted)">${fmtDate(item.created_at)}</td>
+            <td>${dlBtn}</td>
+          </tr>
+        `;
+      }).join('');
+
+      container.innerHTML = `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Formato</th>
+                <th>Status</th>
+                <th>Data</th>
+                <th>Arquivo</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      `;
+    } catch {
+      container.innerHTML = '<p class="empty-msg" style="color:var(--error)">Erro ao carregar histórico.</p>';
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────
+     Helpers
+  ───────────────────────────────────────────────────────── */
+  function statusLabel(s) {
+    return { complete: '✓ Concluído', error: '✗ Erro', pending: '⏳ Pendente', downloading: '⬇ Baixando' }[s] || s;
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    return new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+  }
+
+  function truncate(s, n) {
+    return s && s.length > n ? s.slice(0, n) + '…' : (s || '');
+  }
+
+  function escHtml(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  /* ─────────────────────────────────────────────────────────
+     Init
+  ───────────────────────────────────────────────────────── */
+  loadHistory();
+
+  document.getElementById('urlInput').addEventListener('keypress', e => {
+    if (e.key === 'Enter') startDownload();
+  });
+</script>
+</body>
+</html>

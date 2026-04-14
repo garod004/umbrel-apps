@@ -1,0 +1,18 @@
+# Downloads e banco de dados (gerados em produção)
+downloads/
+data/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Sistema
+.DS_Store
+Thumbs.db
