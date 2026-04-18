@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>YT Downloader</title>
+  <title>Video Downloader</title>
   <style>
     /* ── Reset & Base ──────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -326,9 +326,9 @@
   <header>
     <div class="logo">
       <div class="logo-icon">▶</div>
-      YT Downloader
+      Video Downloader
     </div>
-    <p class="tagline">Baixe vídeos e músicas do YouTube direto no servidor</p>
+    <p class="tagline">Baixe vídeos e músicas de qualquer plataforma direto no servidor</p>
   </header>
 
   <!-- Form Card -->
@@ -339,7 +339,7 @@
       <input
         id="urlInput"
         type="text"
-        placeholder="Cole o link do YouTube aqui (vídeo ou playlist)..."
+        placeholder="Cole o link aqui (YouTube, Twitter/X, Instagram, TikTok...)"
         autocomplete="off"
         spellcheck="false"
       />
@@ -395,7 +395,7 @@
     errEl.classList.remove('visible');
 
     if (!url) {
-      showError('Cole um link do YouTube antes de baixar.');
+      showError('Cole um link antes de baixar.');
       urlEl.focus();
       return;
     }

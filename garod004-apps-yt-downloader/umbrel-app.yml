@@ -1,14 +1,15 @@
 manifestVersion: 1
 id: garod004-apps-yt-downloader
 name: YT Downloader
-tagline: Baixe vídeos e músicas do YouTube
+tagline: Baixe vídeos e músicas de qualquer plataforma
 icon: https://raw.githubusercontent.com/garod004/yt-downloader/main/garod004-apps-yt-downloader/icon.svg
 category: media
-version: '1.0.0'
+version: '1.1.0'
 port: 8090
 description: >-
-  Interface web para baixar vídeos e músicas do YouTube diretamente no seu servidor.
-  Suporta downloads em 1080p, 720p e 480p (MP4), áudio em MP3 e playlists completas.
+  Interface web para baixar vídeos e músicas diretamente no seu servidor.
+  Suporta YouTube, Twitter/X, Instagram, TikTok e centenas de outras plataformas via yt-dlp.
+  Downloads em 1080p, 720p e 480p (MP4), áudio em MP3 e playlists completas.
   Progresso em tempo real, histórico de downloads e interface simples para toda a família usar.
 developer: garod004
 website: https://github.com/garod004/yt-downloader
