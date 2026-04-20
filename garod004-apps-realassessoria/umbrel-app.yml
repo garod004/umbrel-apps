@@ -1,0 +1,28 @@
+manifestVersion: 1
+id: garod004-apps-realassessoria
+name: Real Assessoria
+tagline: Sistema de gestão jurídica para assessorias
+icon: https://raw.githubusercontent.com/garod004/yt-downloader/main/garod004-apps-realassessoria/icon.svg
+category: productivity
+version: '1.0.0'
+port: 8180
+description: >-
+  Sistema completo de gestão jurídica para assessorias previdenciárias.
+  Cadastro de clientes, controle de processos e prazos, geração de documentos PDF
+  com modelos personalizáveis, gestão de advogados e relatórios financeiros.
+developer: garod004
+website: https://github.com/garod004/realassessoria_1
+dependencies: []
+repo: https://github.com/garod004/realassessoria_1
+support: https://github.com/garod004/realassessoria_1/issues
+gallery:
+  - https://raw.githubusercontent.com/garod004/yt-downloader/main/garod004-apps-realassessoria/icon.svg
+  - https://raw.githubusercontent.com/garod004/yt-downloader/main/garod004-apps-realassessoria/icon.svg
+  - https://raw.githubusercontent.com/garod004/yt-downloader/main/garod004-apps-realassessoria/icon.svg
+path: ''
+defaultUsername: 'admin@realassessoria.local'
+defaultPassword: 'admin123'
+releaseNotes: >-
+  Versão inicial com sistema de modelos de documentos, geração de PDF e gestão completa de clientes.
+submitter: garod004
+submission: https://github.com/garod004/realassessoria_1
