@@ -141,11 +141,55 @@ try {
     $nome_pdf = preg_replace('/[^a-zA-Z0-9_-]/', '_', $modelo['nome']) . '_' . date('Ymd_His') . '.pdf';
     $html = '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><style>
         @page { margin: 0; }
-        body { margin:0; padding:0; background:#dce4ec; font-family:\'DejaVu Sans\',sans-serif; font-size:9pt; color:#1a1a1a; line-height:1.45; }
+        body { margin:0; padding:0; background:#fff; font-family:\'DejaVu Sans\',sans-serif; font-size:10pt; color:#1a1a1a; line-height:1.5; }
         p { margin:0; }
         table { border-collapse:collapse; }
-        td { vertical-align:top; padding:0; }
+        td, th { vertical-align:top; padding:0; }
         strong, b { font-weight:bold; }
+
+        /* ── Sistema A: Navy (Procurações + Contratos RA) ── */
+        .doc-bar     { background:#2c3e50; color:#fff; padding:14px 22px; font-size:15pt; font-weight:bold; letter-spacing:1px; }
+        .doc-bar-sub { background:#2c3e50; color:#a8bfcc; padding:3px 22px 13px; font-size:10pt; font-weight:normal; }
+        .doc-sec     { background:#34495e; color:#fff; padding:7px 22px; font-size:9.5pt; font-weight:bold; letter-spacing:.4px; }
+        .doc-body    { padding:10px 22px 6px; }
+        .doc-body p  { margin-bottom:5pt; }
+        .doc-sig     { padding:16px 22px 22px; }
+        .lv          { width:100%; }
+        .lv td       { padding:2pt 8pt 2pt 0; }
+        .lv .lb      { font-weight:bold; white-space:nowrap; width:1%; }
+
+        /* ── Sistema B: Simples (Edson Santiago) ── */
+        .plain        { padding:1.8cm 2.2cm; }
+        .plain-title  { font-size:13pt; font-weight:bold; text-align:center; margin-bottom:14pt; }
+        .plain p      { text-align:justify; margin-bottom:7pt; }
+        .plain-sec    { font-size:10pt; font-weight:bold; margin-top:11pt; margin-bottom:3pt; }
+        .bank         { width:75%; margin:10pt auto; }
+        .bank td      { border:1px solid #999; padding:6pt 8pt; text-align:center; font-size:8.5pt; }
+
+        /* ── Sistema C: Dourado (Declaração Hipossuf. DECLARANTE + Residência) ── */
+        .dgold-title   { font-size:24pt; font-weight:bold; padding:20px 22px 2px; }
+        .dgold-sub     { font-size:9pt; color:#999; letter-spacing:2px; text-transform:uppercase; padding:0 22px 10px; }
+        .dgold-rule    { border:0; border-top:2.5px solid #c8956c; margin:0 22px; }
+        .dgold-sec     { background:#ece8e0; color:#5a4530; padding:8px 22px; font-weight:bold; font-size:9.5pt; margin-top:8px; }
+        .dgold-body    { border-left:4px solid #c8956c; padding:10px 22px 10px 18px; margin:10px 22px; }
+        .dgold-body p  { margin-bottom:5pt; text-align:justify; }
+        .dgold-date    { text-align:center; padding:20px 22px 10px; }
+        .dgold-sig     { text-align:center; padding:8px 22px; }
+        .dgold-sigline { display:block; width:200px; border:0; border-top:1px solid #333; margin:0 auto 5pt; }
+        .dgold-footer  { background:#c8956c; height:8px; margin-top:30px; }
+
+        /* ── Sistema D: Acadêmico simples (Declaração art.98 CPC) ── */
+        .dsimple            { padding:2cm 2.8cm; }
+        .dsimple-title      { font-size:14pt; font-weight:bold; text-align:center; margin-bottom:22pt; }
+        .dsimple p          { text-indent:2em; text-align:justify; margin-bottom:8pt; }
+        .dsimple-date       { text-align:center; margin:20pt 0; text-indent:0; }
+        .dsimple-sigwrap    { text-align:center; margin-top:28pt; }
+        .dsimple-sigline    { display:block; width:220px; border:0; border-top:1px solid #333; margin:0 auto 5pt; }
+
+        /* ── Assinaturas compartilhadas ── */
+        .sig-table          { width:100%; margin-top:20pt; }
+        .sig-table td       { text-align:center; padding:4pt 6pt; }
+        .sig-line           { display:block; border:0; border-top:1px solid #333; margin:0 auto 4pt; width:90%; }
     </style></head><body>' . $conteudo_final . '</body></html>';
 
     $options = new Options();
